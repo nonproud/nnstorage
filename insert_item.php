@@ -1,6 +1,5 @@
 <?php
 	include("conn.php");
-
 	$pName = $_POST['pName'];
 	$pPrice = $_POST['pPrice'];
 	$pDescribtion = $_POST['pDescription'];
@@ -12,7 +11,7 @@ if ($_FILES['imgage']['name'] != "" ) {
 }else die("You did not specify an input file or file excedd form");
 
 
-	$imagePath = "/OnlineStore/food/".$filename;
+	$imagePath = "./goods_img/".$filename;
 
 	// insert new item
 	$sql_insert = 'INSERT INTO `goods`(`Name`, `Price`, `Describtion`, `Amount`,  `Image`) VALUES ("'.$pName.'",

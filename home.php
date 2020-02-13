@@ -7,7 +7,7 @@
   $fname = $_SESSION['fname'];
   $lname = $_SESSION['lname'];
   $aut_lev = $_SESSION['Aut_lev'];
-  $view_all_goods_sql = 'SELECT * FROM `goods` WHERE 1';
+  $view_all_goods_sql = 'SELECT * FROM `goods` WHERE 1 ORDER BY ID DESC';
   $query_goods = mysqli_query($conn, $view_all_goods_sql);
   $query_goods2 = mysqli_query($conn, $view_all_goods_sql);
 
@@ -88,7 +88,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   <div class="w3-row-padding">
   <?php
           while ($goods = mysqli_fetch_array($query_goods)) {
-            $id = $goods['ID']; ?>
+            $id = $goods['ID'];
+            $can_remove = $goods['can_remove']; ?>
             <div class="w3-third w3-container">
             <div class="w3-display-container">
             <img src="<?php echo $goods['Image']; ?>" alt="Norway" style="width:100%" class="w3-hover-opacity">
@@ -98,10 +99,15 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
             <?php
               if($aut_lev == "Administrator"){ ?>
               <div align="center">
-              <button  onclick="document.getElementById('<?php echo $id; ?>').style.display='block'">Edit</button>
+              <button  class="w3-button w3-padding-large w3-light-grey w3-margin-bottom" onclick="document.getElementById('<?php echo $id; ?>').style.display='block'">Edit</button>
               <form method="POST" action="delete_item.php">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
-                <input type="submit"  value="remove">
+                <?php if($can_remove == 0){?>
+                  <input  class="w3-button w3-padding-large w3-red w3-margin-bottom" type="submit"  value="This item cannot remove" style="color: white; background-color: red;" disabled>
+                <?php } else { ?>
+                  <input  class="w3-button w3-padding-large w3-red w3-margin-bottom" type="submit"  value="remove" style="color: white; background-color: red;">
+                  <?php } ?>
+
               </form>
               </div>
             <?php  
@@ -145,7 +151,11 @@ if($aut_lev == "Administrator"){
                 <p><input class="w3-input w3-border" type="number" placeholder="Price" name="pPrice" value="<?php echo $goods['Price']; ?>"></p>
                 <p><textarea class="w3-input w3-border" type="text" placeholder="Enter Desciption" name="pDescription"><?php echo $goods['Describtion']; ?></textarea></p>
                 <p><input class="w3-input w3-border" type="number" placeholder="Amount" name="pAmount" value="<?php echo $goods['Amount']; ?>"></p>
-                <input type="submit" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="document.getElementById('<?php echo $id; ?>').style.display='none'" value="Update">
+                <?php if($can_remove == 0){?>
+                <input type="submit" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="document.getElementById('<?php echo $id; ?>').style.display='none'" value="This item can't be updated" disabled>
+                <?php } else { ?>
+                  <input type="submit" class="w3-button w3-padding-large w3-red w3-margin-bottom" onclick="document.getElementById('<?php echo $id; ?>').style.display='none'" value="Update">
+                  <?php } ?>
                 </form>
               </div>
             </div>
